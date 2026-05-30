@@ -24,19 +24,24 @@
     }
 
     * { box-sizing: border-box; }
-    html { min-height: 100%; }
+    html, body { min-height: 100%; }
 
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: Poppins, Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Noto Sans JP", Arial;
       color: var(--text);
-      /* Исправлено резкое обрывание света при скролле */
+      overflow-x: hidden;
+    }
+
+    /* Фон вынесен в отдельный фиксированный блок */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
       background: radial-gradient(1200px 800px at 80% -10%, rgba(255,158,219,0.2) 0%, transparent 70%),
                   radial-gradient(1000px 700px at -10% 110%, rgba(122,168,255,0.18) 0%, transparent 70%),
                   var(--bg);
-      background-attachment: fixed;
-      overflow-x: hidden;
     }
 
     .container { width: min(1000px, 92%); margin: 0 auto; }
@@ -98,13 +103,11 @@
     .info-row .key { text-transform: capitalize; }
     @media (max-width: 560px) { .info-row { grid-template-columns: 1fr; } }
 
-    /* Sakura */
-    .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+    /* Sakura Layers */
     .bg-image { position:absolute; inset:0; width:100%; height:100%; opacity: 0.6; filter: blur(2px); background: center center / cover no-repeat url('backg.mp4'); }
     @supports (-webkit-touch-callout: none) { .bg-image { background-position: 50% 45%; } }
 
     .glow { position: absolute; filter: blur(40px); opacity: 0.6; mix-blend-mode: screen; }
-    /* Свечение теперь плавно растворяется к 70% */
     .glow-1 { width: 40vmax; height: 40vmax; top: -10vmax; left: -10vmax; background: radial-gradient(circle, rgba(255,158,219,0.5) 0%, transparent 70%); }
     .glow-2 { width: 36vmax; height: 36vmax; bottom: -6vmax; right: -6vmax; background: radial-gradient(circle, rgba(122,168,255,0.5) 0%, transparent 70%); }
 
@@ -113,9 +116,12 @@
       position: absolute; width: 14px; height: 10px; border-radius: 10px 10px 10px 0;
       background: #ff9edb; opacity: 0.9; transform: rotate(15deg);
       box-shadow: inset 0 0 6px rgba(255,255,255,0.6);
-      animation: fall linear forwards, sway ease-in-out infinite;
+      /* Бесконечное падение */
+      animation: fall linear infinite, sway ease-in-out infinite;
     }
-    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0.4; } }
+
+    /* Теперь они улетают далеко за пределы экрана и не меняют прозрачность */
+    @keyframes fall { to { transform: translateY(150vh) rotate(360deg); } }
     @keyframes sway { 0%,100% { margin-left: 0; } 50% { margin-left: 20px; } }
 
     /* Footer */
@@ -379,7 +385,7 @@
   });
 })();
 
-// устал я этот плеер делать
+// Логика кнопки плеера
 (function(){
   const b=document.getElementById('musicBtn'),a=document.getElementById('bgMusic');
   let p=false;
@@ -401,3 +407,4 @@
 </script>
   </body>
 </html>
+
